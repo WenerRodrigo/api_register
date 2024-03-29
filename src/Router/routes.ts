@@ -1,11 +1,14 @@
 import { Router } from 'express';
+import { UserController } from '../controllers/controllerUser';
 
 
 const router = Router();
+const userController = new UserController();
 
-router.post('/user', (req, res) => {
-    return res.json({ message: 'Usuário criado com sucesso' })
-})
+router.get('/user', userController.getById);
+router.post('/user', userController.create);
+router.put('/user/:id', userController.update);
+router.delete('/user/:id', userController.delete);
 
 
 export { router }
