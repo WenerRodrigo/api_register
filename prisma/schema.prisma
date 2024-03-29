@@ -13,13 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String
-  email    String   @unique
-  password String
-
-  @@map("user")
+  id             Int       @id @default(autoincrement())
+  name           String
+  email          String    @unique
+  password       String
+  cpf            String
+  phone          String
+  cep            String
+  address        String
+  houseNumber    String    @map("houseNumber") // Mapeamento do número da casa para 'houseNumber'
+  complement     String?   // Adicionando '?' para indicar que é um campo opcional
+  neighborhood   String
+  city           String
+  state          String
+  addressRef     String?   // Adicionando '?' para indicar que é um campo opcional
 }
-

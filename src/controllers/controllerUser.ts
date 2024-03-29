@@ -1,18 +1,56 @@
+// UserController.ts
+
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { validationResult } from "express-validator";
+import userShema from "../shemas/userShema";
 
 const prisma = new PrismaClient();
 
 export class UserController {
   async create(req: Request, res: Response) {
-    const { name, email, password } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const {
+      name,
+      email,
+      password,
+      cpf,
+      phone,
+      cep,
+      address,
+      houseNumber,
+      complement,
+      neighborhood,
+      city,
+      state,
+      addressRef
+    } = req.body;
 
     try {
+      const { error } = userShema.validate(req.body);
+      if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+      }
+
       await prisma.user.create({
         data: {
           name,
           email,
           password,
+          cpf,
+          phone,
+          cep,
+          address,
+          houseNumber,
+          complement,
+          neighborhood,
+          city,
+          state,
+          addressRef
         },
       });
 
@@ -34,9 +72,7 @@ export class UserController {
           password,
         },
       });
-      res
-        .status(200)
-        .json({ message: "Usuário atualizado com sucesso", user: updatedUser });
+      res.status(200).json({ message: "Usuário atualizado com sucesso", user: updatedUser });
     } catch (error) {
       return res.status(500).json({ message: "Erro ao atualizar usuário" });
     }
